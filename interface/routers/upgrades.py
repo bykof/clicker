@@ -3,11 +3,11 @@ from fastapi import APIRouter
 router = APIRouter()
 
 
-@router.post('/register')
-async def register_user():
+@router.get('/available')
+async def available_upgrades():
     return {'message': 'Hello World'}
 
 
-@router.post('/login')
-async def login_user():
+@router.post('/buy')
+async def buy_upgrade():
     return {'message': 'Hello World'}

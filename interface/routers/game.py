@@ -1,4 +1,4 @@
-from fastapi import APIRouter, WebSocket
+from fastapi import APIRouter, WebSocket, Security
 from starlette.websockets import WebSocketDisconnect
 
 router = APIRouter()
@@ -10,7 +10,7 @@ async def balance(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_text()
-            await websocket.send_text(f'Message text was: {data}')
+            await websocket.send_text(f'Balance text was: {data}')
     except WebSocketDisconnect:
         print('disconnected!')
 
@@ -21,6 +21,6 @@ async def click(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_text()
-            await websocket.send_text(f'Message text was: {data}')
+            await websocket.send_text(f'Click text was: {data}')
     except WebSocketDisconnect:
         print('disconnected!')

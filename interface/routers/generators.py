@@ -3,11 +3,11 @@ from fastapi import APIRouter
 router = APIRouter()
 
 
-@router.get('/')
-async def list_generators():
+@router.get('/available')
+async def available_generators():
     return {'message': 'Hello World'}
 
 
-@router.get('/buy')
+@router.post('/buy')
 async def buy_generator():
     return {'message': 'Hello World'}
