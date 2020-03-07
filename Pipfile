@@ -9,9 +9,14 @@ verify_ssl = true
 fastapi = "*"
 uvicorn = "*"
 redis = "*"
+sqlalchemy = "*"
+alembic = "*"
+psycopg2-binary = "*"
 
 [requires]
 python_version = "3.8"
 
 [scripts]
 dev = "pipenv run uvicorn main:app --reload"
+create-migrations = "pipenv run alembic revision --autogenerate"
+migrate = "pipenv run alembic upgrade head"

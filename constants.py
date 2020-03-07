@@ -1,0 +1,1 @@
+MULTIPLIER = 1.07
