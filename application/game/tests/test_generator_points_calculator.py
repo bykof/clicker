@@ -8,6 +8,11 @@ from models import Generator
 class TestGeneratorPointsCalculator(unittest.TestCase):
     def test_calculate_points(self):
         self.assertEqual(
+            Decimal(0),
+            GeneratorPointsCalculator.calculate_points([]),
+        )
+
+        self.assertEqual(
             Decimal("1.3"),
             GeneratorPointsCalculator.calculate_points(
                 [
