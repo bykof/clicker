@@ -4,6 +4,7 @@ from typing import Union
 import jwt
 from fastapi import HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from jwt import PyJWTError
 
 from application.user.user_password_hasher import UserPasswordHasher
 from constants import SECRET_KEY, JWT_ALGORITHM, ACCESS_TOKEN_EXPIRE_HOURS
@@ -38,6 +39,18 @@ class UsersController:
         to_encode.update({'exp': expire})
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=JWT_ALGORITHM)
         return encoded_jwt
+
+    def get_user_by_token(self, token) -> Union[User, None]:
+
+        try:
+            payload = jwt.decode(token, SECRET_KEY, algorithms=[JWT_ALGORITHM])
+            username: str = payload.get('sub')
+            if username is None:
+                return None
+        except PyJWTError:
+            return None
+
+        return self.db.query(User).filter(User.username == username).first()
 
     def login(self, form_data: OAuth2PasswordRequestForm):
         user = self.authenticate_user(form_data.username, form_data.password)

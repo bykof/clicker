@@ -10,3 +10,15 @@ class BalanceClient(metaclass=ABCMeta):
     @abstractmethod
     def add_points(self, points):
         pass
+
+    @abstractmethod
+    def get_points(self):
+        pass
+
+    @abstractmethod
+    def acquire_mutex(self):
+        pass
+
+    @abstractmethod
+    def release_mutex(self):
+        pass

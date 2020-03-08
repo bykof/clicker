@@ -4,9 +4,18 @@ from models import User
 
 
 class GameService:
-    def __int__(self, user: User, balance_client: BalanceClient):
+    def __init__(self, user: User, balance_client: BalanceClient):
         self.user = user
         self.balance_client = balance_client
+
+    def acquire_mutex(self):
+        self.balance_client.acquire_mutex()
+
+    def release_mutex(self):
+        self.balance_client.release_mutex()
+
+    def get_current_points(self):
+        return self.balance_client.get_points()
 
     def add_click_to_balance(self):
         # TODO: correct points
