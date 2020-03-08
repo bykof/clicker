@@ -2,15 +2,12 @@ from datetime import timedelta, datetime
 from typing import Union
 
 import jwt
-from fastapi import Depends, HTTPException, status
+from fastapi import HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from jwt import PyJWTError
-from sqlalchemy.orm import Session
 
 from application.user.user_password_hasher import UserPasswordHasher
 from constants import SECRET_KEY, JWT_ALGORITHM, ACCESS_TOKEN_EXPIRE_HOURS
 from interface.models.users import RegisterData
-from interface.utils import oauth2_scheme, get_db
 from models import User
 from models.factories.user_factory import UserFactory
 
@@ -55,7 +52,7 @@ class UsersController:
             data={'sub': user.username},
             expires_delta=access_token_expires,
         )
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {'access_token': access_token, 'token_type': 'bearer'}
 
     def register(self, register_data: RegisterData):
         if self.get_user(register_data.username) is not None:
@@ -70,4 +67,3 @@ class UsersController:
         self.db.add(user)
         self.db.commit()
         return user
-
