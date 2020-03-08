@@ -3,6 +3,7 @@ from typing import Union
 
 from fastapi import APIRouter, WebSocket, Depends, status
 from fastapi.websockets import WebSocketDisconnect
+from websockets import ConnectionClosedOK
 
 from infrastructure.redis_balance_client import RedisBalanceClient
 from interface.exceptions.mutex_already_acquired import MutexAlreadyAcquired
@@ -24,11 +25,34 @@ async def click(websocket: WebSocket, user: Union[User, None] = Depends(get_curr
     try:
         while True:
             await websocket.send_json({
-                'points': game_service.get_current_points()
+                'points': game_service.get_current_points(),
             })
+            await asyncio.sleep(1)
+    except (WebSocketDisconnect, ConnectionClosedOK):
+        pass
+
+
+@router.websocket('/generators')
+async def generators(websocket: WebSocket, user: Union[User, None] = Depends(get_current_websocket_user)):
+    if user is None:
+        return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+
+    balance_client = RedisBalanceClient(user)
+    game_service = GameService(user, balance_client)
+
+    try:
+        game_service.acquire_generators_mutex()
+        await websocket.accept()
+
+        while True:
+            game_service.add_generator_points_to_balance()
             await asyncio.sleep(1)
     except WebSocketDisconnect:
         pass
+    except MutexAlreadyAcquired:
+        return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+    finally:
+        game_service.release_generators_mutex()
 
 
 @router.websocket('/click')
@@ -40,7 +64,7 @@ async def click(websocket: WebSocket, user: Union[User, None] = Depends(get_curr
     game_service = GameService(user, balance_client)
 
     try:
-        game_service.acquire_mutex()
+        game_service.acquire_click_mutex()
         await websocket.accept()
 
         while True:
@@ -51,4 +75,4 @@ async def click(websocket: WebSocket, user: Union[User, None] = Depends(get_curr
     except MutexAlreadyAcquired:
         return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
     finally:
-        game_service.release_mutex()
+        game_service.release_click_mutex()
