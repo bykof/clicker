@@ -8,7 +8,7 @@ class User(Base):
     __tablename__ = 'user'
 
     id = Column(Integer, primary_key=True)
-    username = Column(String)
+    username = Column(String, unique=True)
     password = Column(String)
     created = Column(DateTime)
-    inventories = relationship('GeneratorPurchase', back_populates='user')
+    generator_purchases = relationship('GeneratorPurchase', back_populates='user')

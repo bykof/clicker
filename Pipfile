@@ -12,6 +12,8 @@ redis = "*"
 sqlalchemy = "*"
 alembic = "*"
 psycopg2-binary = "*"
+python-multipart = "*"
+pyjwt = "*"
 
 [requires]
 python_version = "3.8"

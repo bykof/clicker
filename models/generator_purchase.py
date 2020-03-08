@@ -5,8 +5,8 @@ from models.base import Base
 
 
 class GeneratorPurchase(Base):
-    default_back_populates = 'generator_purchase'
-    __tablename__ = default_back_populates
+    __tablename__ = 'generator_purchase'
+    default_back_populates = 'generator_purchases'
 
     id = Column(Integer, primary_key=True)
 
