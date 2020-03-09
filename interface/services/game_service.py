@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from application.game.generator_points_calculator import GeneratorPointsCalculator
-from interface.abstracts.balance_client import BalanceClient
+from infrastructure.abstracts import BalanceClient
 from models import User
 
 

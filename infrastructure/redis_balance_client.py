@@ -3,7 +3,7 @@ from typing import Any
 import redis
 
 from constants import REDIS_URL
-from interface.abstracts.balance_client import BalanceClient
+from infrastructure.abstracts import BalanceClient
 from interface.exceptions.mutex_already_acquired import MutexAlreadyAcquired
 from models import User
 
