@@ -15,7 +15,7 @@ router = APIRouter()
 
 
 @router.websocket('/balance')
-async def click(websocket: WebSocket, user: Union[User, None] = Depends(get_current_websocket_user)):
+async def balance(websocket: WebSocket, user: Union[User, None] = Depends(get_current_websocket_user)):
     if user is None:
         return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
 
@@ -45,9 +45,12 @@ async def generators(websocket: WebSocket, user: Union[User, None] = Depends(get
         await websocket.accept()
 
         while True:
-            game_service.add_generator_points_to_balance()
+            points = game_service.add_generator_points_to_balance()
+            await websocket.send_json({
+                'points': int(points),
+            })
             await asyncio.sleep(1)
-    except WebSocketDisconnect:
+    except (WebSocketDisconnect, ConnectionClosedOK):
         pass
     except MutexAlreadyAcquired:
         return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
@@ -70,7 +73,7 @@ async def click(websocket: WebSocket, user: Union[User, None] = Depends(get_curr
         while True:
             await websocket.receive_text()
             game_service.add_click_to_balance()
-    except WebSocketDisconnect:
+    except (WebSocketDisconnect, ConnectionClosedOK):
         pass
     except MutexAlreadyAcquired:
         return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
