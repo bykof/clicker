@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from application.game.generator_points_calculator import GeneratorPointsCalculator
 from infrastructure.abstracts import BalanceClient
-from models import User
+from models import User, Generator
 
 
 class GameService:
@@ -34,3 +34,6 @@ class GameService:
         points = GeneratorPointsCalculator.calculate_points(self.user.generator_purchases)
         self.balance_client.add_points(points=int(points))
         return points
+
+    def subtract_points(self, costs: float):
+        self.balance_client.subtract_points(costs)

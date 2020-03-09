@@ -15,4 +15,4 @@ class GeneratorPurchase(Base):
 
     generator_id = Column(Integer, ForeignKey('generator.id'))
     generator = relationship('Generator', back_populates=default_back_populates)
-    amount = Column(Integer)
+    amount = Column(Integer, default=1)

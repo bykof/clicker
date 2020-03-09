@@ -3,19 +3,24 @@ from typing import Union
 
 from fastapi import APIRouter, WebSocket, Depends, status
 from fastapi.websockets import WebSocketDisconnect
+from sqlalchemy.orm import Session
 from websockets import ConnectionClosedOK
 
 from infrastructure.redis_balance_client import RedisBalanceClient
 from interface.exceptions.mutex_already_acquired import MutexAlreadyAcquired
 from interface.services.game_service import GameService
-from interface.utils import get_current_websocket_user
+from interface.utils import get_current_websocket_user, get_db
 from models import User
 
 router = APIRouter()
 
 
 @router.websocket('/balance')
-async def balance(websocket: WebSocket, user: Union[User, None] = Depends(get_current_websocket_user)):
+async def balance(
+    websocket: WebSocket,
+    user: Union[User, None] = Depends(get_current_websocket_user),
+    db: Session = Depends(get_db),
+):
     if user is None:
         return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
 
@@ -24,6 +29,7 @@ async def balance(websocket: WebSocket, user: Union[User, None] = Depends(get_cu
     game_service = GameService(user, balance_client)
     try:
         while True:
+            db.refresh(user)
             await websocket.send_json({
                 'points': game_service.get_current_points(),
             })
@@ -33,7 +39,11 @@ async def balance(websocket: WebSocket, user: Union[User, None] = Depends(get_cu
 
 
 @router.websocket('/generators')
-async def generators(websocket: WebSocket, user: Union[User, None] = Depends(get_current_websocket_user)):
+async def generators(
+    websocket: WebSocket,
+    user: Union[User, None] = Depends(get_current_websocket_user),
+    db: Session = Depends(get_db),
+):
     if user is None:
         return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
 
@@ -45,6 +55,7 @@ async def generators(websocket: WebSocket, user: Union[User, None] = Depends(get
         await websocket.accept()
 
         while True:
+            db.refresh(user)
             points = game_service.add_generator_points_to_balance()
             await websocket.send_json({
                 'points': int(points),
