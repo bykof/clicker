@@ -2,7 +2,7 @@ import unittest
 from decimal import Decimal
 
 from application.game.generator_points_calculator import GeneratorPointsCalculator
-from models import Generator
+from models import Generator, GeneratorPurchase
 
 
 class TestGeneratorPointsCalculator(unittest.TestCase):
@@ -16,8 +16,14 @@ class TestGeneratorPointsCalculator(unittest.TestCase):
             Decimal("1.3"),
             GeneratorPointsCalculator.calculate_points(
                 [
-                    Generator(income_rate=Decimal("1.0")),
-                    Generator(income_rate=Decimal("0.3")),
+                    GeneratorPurchase(
+                        generator=Generator(income_rate=Decimal("1.0")),
+                        amount=1,
+                    ),
+                    GeneratorPurchase(
+                        generator=Generator(income_rate=Decimal("0.3")),
+                        amount=1,
+                    ),
                 ]
             ),
         )
@@ -26,7 +32,38 @@ class TestGeneratorPointsCalculator(unittest.TestCase):
             Decimal("1"),
             GeneratorPointsCalculator.calculate_points(
                 [
-                    Generator(income_rate=Decimal("1.0")),
+                    GeneratorPurchase(
+                        generator=Generator(income_rate=Decimal("1.0")),
+                        amount=1,
+                    )
+                ]
+            ),
+        )
+
+        self.assertEqual(
+            Decimal("2"),
+            GeneratorPointsCalculator.calculate_points(
+                [
+                    GeneratorPurchase(
+                        generator=Generator(income_rate=Decimal("1.0")),
+                        amount=2,
+                    )
+                ]
+            ),
+        )
+
+        self.assertEqual(
+            Decimal("9.5"),
+            GeneratorPointsCalculator.calculate_points(
+                [
+                    GeneratorPurchase(
+                        generator=Generator(income_rate=Decimal("1.0")),
+                        amount=2,
+                    ),
+                    GeneratorPurchase(
+                        generator=Generator(income_rate=Decimal("2.5")),
+                        amount=3,
+                    )
                 ]
             ),
         )
@@ -35,10 +72,22 @@ class TestGeneratorPointsCalculator(unittest.TestCase):
             Decimal("1.93"),
             GeneratorPointsCalculator.calculate_points(
                 [
-                    Generator(income_rate=Decimal("1")),
-                    Generator(income_rate=Decimal("0.3")),
-                    Generator(income_rate=Decimal("0.3")),
-                    Generator(income_rate=Decimal("0.33")),
+                    GeneratorPurchase(
+                        generator=Generator(income_rate=Decimal("1")),
+                        amount=1,
+                    ),
+                    GeneratorPurchase(
+                        generator=Generator(income_rate=Decimal("0.3")),
+                        amount=1,
+                    ),
+                    GeneratorPurchase(
+                        generator=Generator(income_rate=Decimal("0.3")),
+                        amount=1,
+                    ),
+                    GeneratorPurchase(
+                        generator=Generator(income_rate=Decimal("0.33")),
+                        amount=1,
+                    ),
                 ]
             ),
         )

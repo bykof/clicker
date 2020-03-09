@@ -31,8 +31,6 @@ class GameService:
         self.balance_client.add_points(points=points)
 
     def add_generator_points_to_balance(self) -> Decimal:
-        points = GeneratorPointsCalculator.calculate_points(
-            [generator_purchases.generator for generator_purchases in self.user.generator_purchases]
-        )
+        points = GeneratorPointsCalculator.calculate_points(self.user.generator_purchases)
         self.balance_client.add_points(points=int(points))
         return points
