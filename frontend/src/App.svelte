@@ -1,6 +1,7 @@
 <script>
   import axios from "axios";
   import qs from "query-string";
+  import Cookie from "js-cookie";
 
   const SERVER_ADDRESS = "http://localhost:8000";
   let points;
@@ -8,7 +9,7 @@
   let username = "";
   let password = "";
   let loginError = null;
-  let token = null;
+  let token = Cookie.get("token");
   let clickWebSocket = null;
   let balanceWebSocket = null;
   let generatorsWebSocket = null;
@@ -48,6 +49,7 @@
         { "Content-Type": "application/x-www-form-urlencoded" }
       );
       token = response.data.access_token;
+      Cookie.set("token", token);
       initBalanceWebsocket();
       initGeneratorsWebsocket();
       initClickWebsocket();
@@ -59,34 +61,52 @@
   const onClick = async () => {
     clickWebSocket.send("click");
   };
+
+  if (token) {
+    initBalanceWebsocket();
+    initClickWebsocket();
+    initGeneratorsWebsocket();
+  }
 </script>
 
 <style>
   .center {
-    justify-content: center;
+    text-align: center;
   }
   .points {
     margin: 20px;
+    font-size: 3em;
   }
   .padding-30 {
     padding: 30px;
   }
+  .click-button {
+    width: 10em;
+    height: 5em;
+    background: #1b262c;
+    color: #ffa372;
+    margin: 10em;
+  }
+  .click-button:active {
+    background: #ed6663;
+    color: #1b262c;
+  }
 </style>
 
 <main>
-  {#if token !== null}
+  {#if token}
     <div class="pure-g">
-      <div class="pure-u-1-5">
-        <p class="points">Points: {points}</p>
+      <div class="pure-u-1-3">
+        <p class="points center">Points: {points}</p>
       </div>
-      <div class="pure-u-1-5">
-        <p class="points">CPS: {clicks_per_second}</p>
+      <div class="pure-u-1-3">
+        <p class="points center">CPS: {clicks_per_second}</p>
       </div>
     </div>
     <div class="pure-g">
       <div class="pure-u-1-3" />
       <div class="pure-u-1-3 center">
-        <button type="button" on:click={onClick} class="pure-button">
+        <button type="button" on:click={onClick} class="pure-button click-button">
           Hit!
         </button>
       </div>
@@ -98,7 +118,7 @@
       </div>
     </div>
   {/if}
-  {#if token == null}
+  {#if !token}
     <div class="pure-g padding-30">
       <div class="pure-u-1-1">
         <form class="pure-form" on:submit|preventDefault={onSubmit}>
@@ -109,7 +129,7 @@
               type="password"
               placeholder="Password"
               bind:value={password} />
-            <button type="submit" class="pure-button pure-button-primary">
+            <button type="submit" class="pure-button  ">
               Sign in
             </button>
           </fieldset>
