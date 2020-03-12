@@ -1,8 +1,11 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from interface.controller.purchase_controller import PurchaseController
 from interface.exceptions.not_sufficient_points import NotSufficientPoints
+from interface.models.generators import GeneratorPurchase
 from interface.utils import oauth2_scheme, get_current_user, get_db
 from models import User, Generator
 
@@ -14,7 +17,12 @@ async def available_generators(token: str = Depends(oauth2_scheme)):
     return {'message': 'token'}
 
 
-@router.post('/{generator_id}/buy')
+@router.get('/current-user', response_model=List[GeneratorPurchase])
+async def get_current_users_generators(user: User = Depends(get_current_user)):
+    return user.generator_purchases
+
+
+@router.post('/{generator_id}/buy', response_model=GeneratorPurchase)
 async def buy_generator(generator_id: int, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     generator = db.query(Generator).filter(Generator.id == generator_id).first()
     if generator is None:
@@ -29,4 +37,4 @@ async def buy_generator(generator_id: int, user: User = Depends(get_current_user
             status_code=400,
             detail=str(exception),
         )
-    return user_generator_purchase.__dict__
+    return user_generator_purchase
