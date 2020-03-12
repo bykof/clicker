@@ -3,11 +3,11 @@
   import qs from "query-string";
 
   const SERVER_ADDRESS = "http://localhost:8000";
-  export let points;
-  export let clicks_per_second;
-  export let username = "";
-  export let password = "";
-  export let loginError = null;
+  let points;
+  let clicks_per_second;
+  let username = "";
+  let password = "";
+  let loginError = null;
   let token = null;
   let clickWebSocket = null;
   let balanceWebSocket = null;
@@ -48,16 +48,16 @@
         { "Content-Type": "application/x-www-form-urlencoded" }
       );
       token = response.data.access_token;
-      initBalanceWebsocket()
-      initGeneratorsWebsocket()
-      initClickWebsocket()
+      initBalanceWebsocket();
+      initGeneratorsWebsocket();
+      initClickWebsocket();
     } catch (error) {
       loginError = error;
     }
   };
 
   const onClick = async () => {
-    clickWebSocket.send('click');
+    clickWebSocket.send("click");
   };
 </script>
 
@@ -86,7 +86,9 @@
     <div class="pure-g">
       <div class="pure-u-1-3" />
       <div class="pure-u-1-3 center">
-        <button type="button" on:click={onClick} class="pure-button">Hit!</button>
+        <button type="button" on:click={onClick} class="pure-button">
+          Hit!
+        </button>
       </div>
       <div class="pure-u-1-3" />
     </div>
