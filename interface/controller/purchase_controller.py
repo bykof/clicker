@@ -1,16 +1,12 @@
-from sqlalchemy.orm import Session
-
 from application.game.generator_costs_calculator import GeneratorCostsCalculator
 from infrastructure.redis_balance_client import RedisBalanceClient
+from interface.controller.base.DBController import DBController
 from interface.exceptions.not_sufficient_points import NotSufficientPoints
 from interface.services.game_service import GameService
 from models import User, Generator, GeneratorPurchase
 
 
-class PurchaseController:
-    def __init__(self, db: Session):
-        self.db = db
-
+class PurchaseController(DBController):
     def buy_generator(self, user: User, generator: Generator):
         game_service = GameService(user, RedisBalanceClient(user))
         points = game_service.get_current_points()

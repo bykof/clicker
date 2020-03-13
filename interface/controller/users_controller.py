@@ -8,15 +8,13 @@ from jwt import PyJWTError
 
 from application.user.user_password_hasher import UserPasswordHasher
 from constants import SECRET_KEY, JWT_ALGORITHM, ACCESS_TOKEN_EXPIRE_HOURS
+from interface.controller.base.DBController import DBController
 from interface.models.users import RegisterData
 from models import User
 from models.factories.user_factory import UserFactory
 
 
-class UsersController:
-    def __init__(self, db):
-        self.db = db
-
+class UsersController(DBController):
     def get_user(self, username: str) -> Union[User, None]:
         return self.db.query(User).filter(User.username == username).first()
 
