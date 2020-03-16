@@ -2,6 +2,10 @@ body {
   background: #0f4c81;
 }
 
+* {
+  color: #ffa372;
+}
+
 .pure-button {
   background: #1b262c;
   color: #ffa372;

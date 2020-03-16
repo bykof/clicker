@@ -3,6 +3,8 @@
   import qs from "query-string";
   import Cookie from "js-cookie";
 
+  import Generators from "./Generators.svelte";
+
   const SERVER_ADDRESS = "http://localhost:8000";
   let points;
   let clicks_per_second;
@@ -93,51 +95,44 @@
   }
 </style>
 
-<main>
-  {#if token}
-    <div class="pure-g">
-      <div class="pure-u-1-3">
-        <p class="points center">Points: {points}</p>
-      </div>
-      <div class="pure-u-1-3">
-        <p class="points center">CPS: {clicks_per_second}</p>
-      </div>
+{#if token}
+  <div class="pure-g">
+    <div class="pure-u-1-3">
+      <p class="points center">Points: {points}</p>
     </div>
-    <div class="pure-g">
-      <div class="pure-u-1-3" />
-      <div class="pure-u-1-3 center">
-        <button type="button" on:click={onClick} class="pure-button click-button">
-          Hit!
-        </button>
-      </div>
-      <div class="pure-u-1-3" />
+    <div class="pure-u-1-3">
+      <p class="points center">CPS: {clicks_per_second}</p>
     </div>
-    <div class="pure-g">
-      <div class="pure-u-1-1">
-        <hr />
-      </div>
+  </div>
+  <div class="pure-g">
+    <div class="pure-u-1-3" />
+    <div class="pure-u-1-3 center">
+      <button type="button" on:click={onClick} class="pure-button click-button">
+        Hit!
+      </button>
     </div>
-  {/if}
-  {#if !token}
-    <div class="pure-g padding-30">
-      <div class="pure-u-1-1">
-        <form class="pure-form" on:submit|preventDefault={onSubmit}>
-          <fieldset>
-            <legend>Sign in</legend>
-            <input type="text" placeholder="Username" bind:value={username} />
-            <input
-              type="password"
-              placeholder="Password"
-              bind:value={password} />
-            <button type="submit" class="pure-button  ">
-              Sign in
-            </button>
-          </fieldset>
-          {#if loginError !== null}
-            <div class="error-message">{loginError}</div>
-          {/if}
-        </form>
-      </div>
+    <div class="pure-u-1-3" />
+  </div>
+  <div class="pure-g padding-30">
+    <div class="pure-u-1-1">
+      <Generators {token} />
     </div>
-  {/if}
-</main>
+  </div>
+{/if}
+{#if !token}
+  <div class="pure-g padding-30">
+    <div class="pure-u-1-1">
+      <form class="pure-form" on:submit|preventDefault={onSubmit}>
+        <fieldset>
+          <legend>Sign in</legend>
+          <input type="text" placeholder="Username" bind:value={username} />
+          <input type="password" placeholder="Password" bind:value={password} />
+          <button type="submit" class="pure-button ">Sign in</button>
+        </fieldset>
+        {#if loginError !== null}
+          <div class="error-message">{loginError}</div>
+        {/if}
+      </form>
+    </div>
+  </div>
+{/if}
