@@ -12,3 +12,4 @@ class User(Base):
     password = Column(String)
     created = Column(DateTime)
     generator_purchases = relationship('GeneratorPurchase', back_populates='user')
+    upgrade_purchases = relationship('UpgradePurchase', back_populates='user')

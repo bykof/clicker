@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from interface.routers import users, generators, game, upgrades
 
-app = FastAPI()
+app = FastAPI(title='Clicker', description='The generic clicker games platform')
 app.include_router(users.router, prefix='/users', tags=['Users'])
 app.include_router(generators.router, prefix='/generators', tags=['Generators'])
 app.include_router(upgrades.router, prefix='/upgrades', tags=['Upgrades'])

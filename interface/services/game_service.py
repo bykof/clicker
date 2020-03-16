@@ -35,5 +35,5 @@ class GameService:
         self.balance_client.add_points(points=int(points))
         return points
 
-    def subtract_points(self, costs: float):
+    def subtract_points(self, costs: int):
         self.balance_client.subtract_points(costs)
