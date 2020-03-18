@@ -3,9 +3,9 @@
   import qs from "query-string";
   import Cookie from "js-cookie";
 
+  import { SERVER_ADDRESS } from './constants.js';
   import Generators from "./Generators.svelte";
 
-  const SERVER_ADDRESS = "http://localhost:8000";
   let points;
   let clicks_per_second;
   let username = "";
@@ -18,7 +18,7 @@
 
   const initBalanceWebsocket = () => {
     balanceWebSocket = new WebSocket(
-      `ws://localhost:8000/game/balance?token=${token}`
+      `ws://${SERVER_ADDRESS}:8000/game/balance?token=${token}`
     );
     balanceWebSocket.onmessage = message => {
       const data = JSON.parse(message.data);
@@ -28,13 +28,13 @@
 
   const initClickWebsocket = () => {
     clickWebSocket = new WebSocket(
-      `ws://localhost:8000/game/click?token=${token}`
+      `ws://${SERVER_ADDRESS}:8000/game/click?token=${token}`
     );
   };
 
   const initGeneratorsWebsocket = () => {
     generatorsWebSocket = new WebSocket(
-      `ws://localhost:8000/game/generators?token=${token}`
+      `ws://${SERVER_ADDRESS}:8000/game/generators?token=${token}`
     );
     generatorsWebSocket.onmessage = message => {
       const data = JSON.parse(message.data);
@@ -46,7 +46,7 @@
     try {
       loginError = null;
       let response = await axios.post(
-        `${SERVER_ADDRESS}/users/token`,
+        `http://${SERVER_ADDRESS}:8000/users/token`,
         qs.stringify({ username, password, grant_type: "password" }),
         { "Content-Type": "application/x-www-form-urlencoded" }
       );

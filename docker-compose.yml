@@ -8,17 +8,14 @@ services:
     image: postgres:12.2
     volumes:
       - db-data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: 'clicker'
-      POSTGRES_USER: 'clicker'
-      POSTGRES_PASSWORD: 'clicker'
+    env_file:
+      - ./.db_env
   clicker:
     build: .
     ports:
       - "8000:80"
-    environment:
-      POSTGRES_URL: 'postgres://clicker:clicker@db/clicker'
-      REDIS_URL: 'redis'
+    env_file:
+      - ./.clicker_env
     depends_on:
       - redis
       - db

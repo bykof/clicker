@@ -1,5 +1,6 @@
 <script>
   import axios from "axios";
+  import { SERVER_ADDRESS } from './constants.js';
 
   export let token;
   let error;
@@ -8,7 +9,7 @@
   const getGeneratorPrice = async generator => {
     try {
       let response = await axios.get(
-        `http://0.0.0.0:8000/generators/${generator.id}/next-price`,
+        `http://${SERVER_ADDRESS}:8000/generators/${generator.id}/next-price`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -28,7 +29,7 @@
     try {
       error = null;
       let response = await axios.get(
-        "http://0.0.0.0:8000/generators/available",
+        `http://${SERVER_ADDRESS}:8000/generators/available`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -46,7 +47,7 @@
     try {
       error = null;
       let response = await axios.get(
-        `http://0.0.0.0:8000/generators/${id}/buy`,
+        `http://${SERVER_ADDRESS}:8000/generators/${id}/buy`,
         {
           headers: {
             Authorization: `Bearer ${token}`
