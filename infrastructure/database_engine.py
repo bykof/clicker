@@ -1,3 +1,5 @@
 from sqlalchemy import create_engine
 
-engine = create_engine('postgres://localhost/clicker')
+from constants import POSTGRES_URL
+
+engine = create_engine(POSTGRES_URL)
