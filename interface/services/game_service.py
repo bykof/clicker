@@ -1,8 +1,9 @@
 from decimal import Decimal
 
 from application.game.generator_points_calculator import GeneratorPointsCalculator
+from application.game.upgrade_points_calculator import UpgradePointsCalculator
 from infrastructure.abstracts import BalanceClient
-from models import User, Generator
+from models import User
 
 
 class GameService:
@@ -26,8 +27,7 @@ class GameService:
         return self.balance_client.get_points()
 
     def add_click_to_balance(self):
-        # TODO: correct points
-        points = 1
+        points = UpgradePointsCalculator.calculate_points(self.user.upgrade_purchases)
         self.balance_client.add_points(points=points)
 
     def add_generator_points_to_balance(self) -> Decimal:
