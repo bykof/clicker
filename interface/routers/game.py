@@ -33,7 +33,7 @@ async def balance(
             await websocket.send_json({
                 'points': game_service.get_current_points(),
             })
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(1)
     except (WebSocketDisconnect, ConnectionClosedOK):
         pass
 
