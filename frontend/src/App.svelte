@@ -7,7 +7,7 @@
   import Generators from "./Generators.svelte";
 
   let points = 0;
-  let clicks_per_second;
+  let clicks_per_second = 0;
   let username = "";
   let password = "";
   let loginError = null;
@@ -116,10 +116,10 @@
 {#if token}
   <div class="pure-g">
     <div class="pure-u-1-3">
-      <p class="points center">Points: {points}</p>
+      <p class="points center">Points: {points.toLocaleString('de-de')}</p>
     </div>
     <div class="pure-u-1-3">
-      <p class="points center">CPS: {clicks_per_second}</p>
+      <p class="points center">CPS: {clicks_per_second.toLocaleString('de-de')}</p>
     </div>
   </div>
   <div class="pure-g">
@@ -133,7 +133,7 @@
   </div>
   <div class="pure-g padding-30">
     <div class="pure-u-1-1">
-      <Generators {token} />
+      <Generators {token} {points} />
     </div>
   </div>
 {/if}

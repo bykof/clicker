@@ -1,10 +1,15 @@
 <script>
   import axios from "axios";
-  import { SERVER_ADDRESS } from './constants.js';
+  import { SERVER_ADDRESS } from "./constants.js";
 
+  const updateInterval = 2000;
   export let token;
+  export let points;
   let error;
   let generators = [];
+  let boughtGenerators = [];
+  let availableGeneratorsInterval;
+  let boughtGeneratorsInterval;
 
   const getGeneratorPrice = async generator => {
     try {
@@ -16,18 +21,31 @@
           }
         }
       );
-      const generatorIndex = generators.findIndex(iterGenerator => iterGenerator.id === generator.id);
+      const generatorIndex = generators.findIndex(
+        iterGenerator => iterGenerator.id === generator.id
+      );
       if (generatorIndex >= 0) {
         generators[generatorIndex].price = response.data;
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
+  };
+
+  const getBoughtGenerators = async () => {
+    try {
+      let response = await axios.get(
+        `http://${SERVER_ADDRESS}:8000/generators/current-user`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      boughtGenerators = response.data;
+    } catch (error) {}
   };
 
   const getAvailableGenerators = async () => {
     try {
-      error = null;
       let response = await axios.get(
         `http://${SERVER_ADDRESS}:8000/generators/available`,
         {
@@ -38,13 +56,12 @@
       );
       generators = response.data;
       generators.forEach(getGeneratorPrice);
-    } catch (error) {
-      error = error;
-    }
+    } catch (error) {}
   };
 
   const onBuy = async id => {
     try {
+      clearIntervals();
       error = null;
       let response = await axios.get(
         `http://${SERVER_ADDRESS}:8000/generators/${id}/buy`,
@@ -54,12 +71,33 @@
           }
         }
       );
+      setupIntervals();
     } catch (error) {
       error = error;
     }
   };
-  getAvailableGenerators();
-  setInterval(getAvailableGenerators, 5000);
+
+  const setupIntervals = () => {
+    getAvailableGenerators();
+    getBoughtGenerators();
+    availableGeneratorsInterval = setInterval(
+      getAvailableGenerators,
+      updateInterval
+    );
+    boughtGeneratorsInterval = setInterval(getBoughtGenerators, updateInterval);
+  };
+
+  const clearIntervals = () => {
+    clearInterval(availableGeneratorsInterval);
+    clearInterval(boughtGeneratorsInterval);
+  };
+
+  const getBoughtAmountOfGenerator = (id) => {
+    const boughtGenerator = boughtGenerators.find(boughtGenerator => boughtGenerator.generator.id == id);
+    if (boughtGenerator) return boughtGenerator.amount;
+  }
+
+  setupIntervals();
 </script>
 
 <style>
@@ -69,14 +107,40 @@
 </style>
 
 <h1>Generators</h1>
-{#each generators as generator}
-  <button
-    type="button"
-    on:click={() => {
-      onBuy(generator.id);
-    }}
-    class="pure-button click-button buy-button">
-    Buy [{generator.id}] ({generator.income_rate}x) for {generator.price}P
-  </button>
-{/each}
+<table class="pure-table pure-table-horizontal">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>CPS</th>
+      <th>Next Price</th>
+      <th />
+      <th>Bought</th>
+    </tr>
+  </thead>
+  <tbody>
+    {#each generators.sort((first, second) =>
+      first.order > second.order ? 1 : -1
+    ) as generator}
+      <tr>
+        <td>{generator.id}</td>
+        <td>{generator.income_rate}</td>
+        <td>{generator.price ? generator.price.toLocaleString('de-de'): ''}</td>
+        <td>
+          <button
+            type="button"
+            disabled={points < generator.price}
+            on:click={() => {
+              onBuy(generator.id);
+            }}
+            class="pure-button click-button buy-button">
+            Buy
+          </button>
+        </td>
+        <td>
+          {getBoughtAmountOfGenerator(generator.id)}
+        </td>
+      </tr>
+    {/each}
+  </tbody>
+</table>
 {#if error}{error}{/if}
