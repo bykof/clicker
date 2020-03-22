@@ -6,7 +6,7 @@
   import { SERVER_ADDRESS } from './constants.js';
   import Generators from "./Generators.svelte";
 
-  let points;
+  let points = 0;
   let clicks_per_second;
   let username = "";
   let password = "";
@@ -15,14 +15,32 @@
   let clickWebSocket = null;
   let balanceWebSocket = null;
   let generatorsWebSocket = null;
+  let numberTimer = null;
 
   const initBalanceWebsocket = () => {
     balanceWebSocket = new WebSocket(
       `ws://${SERVER_ADDRESS}:8000/game/balance?token=${token}`
     );
     balanceWebSocket.onmessage = message => {
+      clearInterval(numberTimer);
       const data = JSON.parse(message.data);
-      points = data.points;
+      // points = 0
+      const routines = 50;
+      const newPoints = data.points; // = 8731868
+      const range = newPoints > points ? newPoints - points : points - newPoints; // 8731868
+      const rangePerMillisecond = Math.abs(Math.floor(range/routines)); // 8.740
+      const increment = newPoints > points ? rangePerMillisecond : -rangePerMillisecond;
+      const interval = 1000/routines;
+      let intervalRoutine = 0;
+      numberTimer = setInterval(() => {
+        intervalRoutine++;
+        if (intervalRoutine == routines - 1) {
+          points = newPoints;
+          clearInterval(numberTimer);
+        } else {
+          points += increment;
+        }
+      }, interval);
     };
   };
 
