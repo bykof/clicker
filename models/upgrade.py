@@ -13,3 +13,4 @@ class Upgrade(Base):
     available_at: Decimal = Column(Numeric)
     multiplier: Decimal = Column(Numeric)
     upgrade_purchases = relationship('UpgradePurchase', back_populates='upgrade')
+    order: int = Column(Integer)

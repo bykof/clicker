@@ -14,3 +14,4 @@ class Generator(Base):
     income_rate: Decimal = Column(Numeric)
     available_at_points_per_second: Decimal = Column(Numeric, default=0)
     generator_purchases = relationship('GeneratorPurchase', back_populates='generator')
+    order: int = Column(Integer)
