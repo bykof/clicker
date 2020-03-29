@@ -110,7 +110,6 @@
 <table class="pure-table pure-table-horizontal">
   <thead>
     <tr>
-      <th>ID</th>
       <th>CPS</th>
       <th>Next Price</th>
       <th />
@@ -122,7 +121,6 @@
       first.order > second.order ? 1 : -1
     ) as generator}
       <tr>
-        <td>{generator.id}</td>
         <td>{generator.income_rate}</td>
         <td>{generator.price ? generator.price.toLocaleString('de-de'): ''}</td>
         <td>

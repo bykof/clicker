@@ -5,6 +5,7 @@
 
   import { SERVER_ADDRESS } from './constants.js';
   import Generators from "./Generators.svelte";
+  import Upgrades from "./Upgrades.svelte";
 
   let points = 0;
   let clicks_per_second = 0;
@@ -132,8 +133,11 @@
     <div class="pure-u-1-3" />
   </div>
   <div class="pure-g padding-30">
-    <div class="pure-u-1-1">
+    <div class="pure-u-1-2">
       <Generators {token} {points} />
+    </div>
+    <div class="pure-u-1-2">
+      <Upgrades {token} {points} />
     </div>
   </div>
 {/if}
