@@ -29,6 +29,7 @@ class GameService:
     def add_click_to_balance(self):
         points = UpgradePointsCalculator.calculate_points(self.user.upgrade_purchases)
         self.balance_client.add_points(points=points)
+        return points
 
     def add_generator_points_to_balance(self) -> Decimal:
         points = GeneratorPointsCalculator.calculate_points(self.user.generator_purchases)

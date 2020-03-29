@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 from typing import Union
 
 from fastapi import APIRouter, WebSocket, Depends, status
@@ -63,7 +64,7 @@ async def generators(
             await asyncio.sleep(1)
     except MutexAlreadyAcquired:
         return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
-    except Exception:
+    except (WebSocketDisconnect, ConnectionClosedOK):
         game_service.release_generators_mutex()
 
 
@@ -81,8 +82,11 @@ async def click(websocket: WebSocket, user: Union[User, None] = Depends(get_curr
 
         while True:
             await websocket.receive_text()
-            game_service.add_click_to_balance()
+            points = game_service.add_click_to_balance()
+            await websocket.send_json({
+                'points': int(points),
+            })
     except MutexAlreadyAcquired:
         return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
-    except Exception:
+    except (WebSocketDisconnect, ConnectionClosedOK):
         game_service.release_click_mutex()
