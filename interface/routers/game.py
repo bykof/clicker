@@ -62,11 +62,9 @@ async def generators(
             })
             await asyncio.sleep(1)
     except (WebSocketDisconnect, ConnectionClosedOK):
-        pass
+        game_service.release_generators_mutex()
     except MutexAlreadyAcquired:
         return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
-    finally:
-        game_service.release_generators_mutex()
 
 
 @router.websocket('/click')
@@ -85,8 +83,6 @@ async def click(websocket: WebSocket, user: Union[User, None] = Depends(get_curr
             await websocket.receive_text()
             game_service.add_click_to_balance()
     except (WebSocketDisconnect, ConnectionClosedOK):
-        pass
+        game_service.release_click_mutex()
     except MutexAlreadyAcquired:
         return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
-    finally:
-        game_service.release_click_mutex()
