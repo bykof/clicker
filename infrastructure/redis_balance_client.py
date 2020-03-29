@@ -2,7 +2,7 @@ from typing import Any
 
 import redis
 
-from constants import REDIS_URL
+from constants import REDIS_URL, REDIS_PASSWORD
 from infrastructure.abstracts import BalanceClient
 from interface.exceptions.mutex_already_acquired import MutexAlreadyAcquired
 from models import User
@@ -11,7 +11,7 @@ from models import User
 class RedisBalanceClient(BalanceClient):
     def __init__(self, user: User):
         super().__init__(user)
-        self.client = redis.Redis(host=REDIS_URL, port=6379, db=0)
+        self.client = redis.Redis(host=REDIS_URL, port=6379, db=0, password=REDIS_PASSWORD)
 
     @property
     def click_lock_id(self):
