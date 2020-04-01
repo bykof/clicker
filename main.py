@@ -1,8 +1,15 @@
 import uvicorn
+
+import sentry_sdk
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from interface.routers import users, generators, game, upgrades
+from constants import SENTRY_URL
+
+if SENTRY_URL:
+    sentry_sdk.init(SENTRY_URL)
 
 app = FastAPI(title='Clicker', description='The generic clicker games platform')
 app.include_router(users.router, prefix='/users', tags=['Users'])
