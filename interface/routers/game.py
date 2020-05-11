@@ -1,5 +1,4 @@
 import asyncio
-import traceback
 from typing import Union
 
 from fastapi import APIRouter, WebSocket, Depends, status

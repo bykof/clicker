@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clicker - Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+    <!-- Bulma Version 0.8.x-->
+    <link rel="stylesheet" href="https://unpkg.com/bulma@0.8.2/css/bulma.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/admin.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.1.0/tablesort.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tablesort/5.1.0/sorts/tablesort.number.min.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            new Tablesort(document.getElementById('highscore-table'));
+        });
+
+    </script>
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        <div class="columns">
+            <div class="column is-12">
+                <section class="info-tiles">
+                    <div class="tile is-ancestor has-text-centered">
+                        <div class="tile is-parent">
+                            <article class="tile is-child box">
+                                <p class="title">{{ users|length }}</p>
+                                <p class="subtitle">Users</p>
+                            </article>
+                        </div>
+                        <div class="tile is-parent">
+                            <article class="tile is-child box">
+                                <p class="title">{{ generator_purchases|sum(attribute='amount') }}</p>
+                                <p class="subtitle">Bought Generators</p>
+                            </article>
+                        </div>
+                        <div class="tile is-parent">
+                            <article class="tile is-child box">
+                                <p class="title">{{ upgrade_purchases|length }}</p>
+                                <p class="subtitle">Bought Upgrades</p>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+                <section class="section">
+                    <div class="columns">
+                        <div class="column is-12">
+                            <table class="table is-striped is-bordered is-fullwidth" id="highscore-table">
+                                <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Bought Generators</th>
+                                    <th>Bought Upgrades</th>
+                                    <th>Clicks</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{ user.generator_purchases|sum(attribute='amount') }}</td>
+                                    <td>{{ user.upgrade_purchases|length }}</td>
+                                    <td>{{ clicks[user.id] }}</td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+
+</html>

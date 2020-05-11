@@ -15,6 +15,8 @@ psycopg2-binary = "*"
 python-multipart = "*"
 pyjwt = "*"
 sentry-sdk = "*"
+jinja2 = "*"
+aiofiles = "*"
 
 [requires]
 python_version = "3.8"

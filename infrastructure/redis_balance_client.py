@@ -32,7 +32,11 @@ class RedisBalanceClient(BalanceClient):
         self.client.decrby(self.points_id, points)
 
     def get_points(self):
-        return int(self.client.get(self.points_id))
+        points = self.client.get(self.points_id)
+        if points:
+            return int(points)
+        else:
+            return 0
 
     def acquire_mutex(self, name: str, value: Any):
         lock_value = self.client.get(name)
