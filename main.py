@@ -9,7 +9,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.staticfiles import StaticFiles
 
-from interface.routers import users, generators, game, upgrades, dashboard
+from interface.routers import users, generators, game, upgrades, dashboard, ws_docs
 from constants import SENTRY_URL
 
 if SENTRY_URL:
@@ -25,7 +25,8 @@ app.include_router(users.router, prefix='/users', tags=['Users'])
 app.include_router(generators.router, prefix='/generators', tags=['Generators'])
 app.include_router(upgrades.router, prefix='/upgrades', tags=['Upgrades'])
 app.include_router(game.router, prefix='/game', tags=['Game'])
-app.include_router(dashboard.router, prefix='/dashboard', tags=['Game'])
+app.include_router(dashboard.router, prefix='/dashboard')
+app.include_router(ws_docs.router, prefix='/ws-docs')
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['*'],

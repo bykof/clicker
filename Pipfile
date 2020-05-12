@@ -17,6 +17,7 @@ pyjwt = "*"
 sentry-sdk = "*"
 jinja2 = "*"
 aiofiles = "*"
+markdown2 = "*"
 
 [requires]
 python_version = "3.8"
