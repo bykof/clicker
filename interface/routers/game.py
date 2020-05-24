@@ -30,7 +30,7 @@ async def balance(
                 'points': game_service.get_current_points(),
             })
             await asyncio.sleep(1)
-    except (WebSocketDisconnect, ConnectionClosedOK):
+    except (WebSocketDisconnect, ConnectionClosed):
         pass
 
 
