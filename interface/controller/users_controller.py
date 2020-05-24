@@ -39,7 +39,6 @@ class UsersController(DBController):
         return encoded_jwt
 
     def get_user_by_token(self, token) -> Union[User, None]:
-
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=[JWT_ALGORITHM])
             username: str = payload.get('sub')
