@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from interface.controller.available_upgrades_controller import AvailableUpgradesController
 from interface.controller.purchase_controller import PurchaseController
 from interface.exceptions.not_sufficient_points import NotSufficientPoints
+from interface.exceptions.upgrade_already_bought_error import UpgradeAlreadyBoughtError
 from interface.models.upgrades import Upgrade as UpgradeModel, UpgradePurchase as UpgradePurchaseModel
 from interface.utils import get_current_user, get_db
 from models import User, Upgrade
@@ -42,6 +43,11 @@ async def buy_upgrade_for_current_user(
     try:
         user_upgrade_purchase = PurchaseController(db).buy_upgrade(user, upgrade)
     except NotSufficientPoints as exception:
+        raise HTTPException(
+            status_code=400,
+            detail=str(exception),
+        )
+    except UpgradeAlreadyBoughtError as exception:
         raise HTTPException(
             status_code=400,
             detail=str(exception),

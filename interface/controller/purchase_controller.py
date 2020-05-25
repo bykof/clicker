@@ -4,6 +4,7 @@ from application.game.generator_costs_calculator import GeneratorCostsCalculator
 from infrastructure.redis_balance_client import RedisBalanceClient
 from interface.controller.base.DBController import DBController
 from interface.exceptions.not_sufficient_points import NotSufficientPoints
+from interface.exceptions.upgrade_already_bought_error import UpgradeAlreadyBoughtError
 from interface.services.game_service import GameService
 from models import User, Generator, GeneratorPurchase, Upgrade, UpgradePurchase
 
@@ -33,8 +34,14 @@ class PurchaseController(DBController):
         return user_generator_purchase
 
     def buy_upgrade(self, user: User, upgrade: Upgrade) -> UpgradePurchase:
+
+        for upgrade_purchase in user.upgrade_purchases:
+            if upgrade_purchase.upgrade.id == upgrade.id:
+                raise UpgradeAlreadyBoughtError(user, upgrade)
+
         game_service = GameService(user, RedisBalanceClient(user))
         points = game_service.get_current_points()
+
         if points < upgrade.cost:
             raise NotSufficientPoints()
 
