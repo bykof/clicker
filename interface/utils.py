@@ -36,9 +36,17 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
 async def get_current_websocket_user(
     websocket: WebSocket,
     db: Session = Depends(get_db),
-) -> User:
-    user = UsersController(db).get_user_by_token(websocket.query_params.get('token', ''))
-    if user is None:
+) -> [User, None]:
+    token = websocket.query_params.get('token', '')
+
+    if token == '':
         await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
+
+    user = UsersController(db).get_user_by_token(websocket.query_params.get('token', ''))
+
+    if not user:
+        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+        return
     else:
         return user

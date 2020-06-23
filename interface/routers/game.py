@@ -20,6 +20,9 @@ async def balance(
     user: User = Depends(get_current_websocket_user),
     db: Session = Depends(get_db),
 ):
+    if not user:
+        return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+
     await websocket.accept()
     balance_client = RedisBalanceClient(user)
     game_service = GameService(user, balance_client)
@@ -40,6 +43,9 @@ async def generators(
     user: User = Depends(get_current_websocket_user),
     db: Session = Depends(get_db),
 ):
+    if not user:
+        return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+
     balance_client = RedisBalanceClient(user)
     game_service = GameService(user, balance_client)
 
@@ -62,6 +68,9 @@ async def generators(
 
 @router.websocket('/click')
 async def click(websocket: WebSocket, user: User = Depends(get_current_websocket_user)):
+    if not user:
+        return await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
+
     balance_client = RedisBalanceClient(user)
     game_service = GameService(user, balance_client)
 
