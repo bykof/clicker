@@ -40,13 +40,11 @@ async def get_current_websocket_user(
     token = websocket.query_params.get('token', '')
 
     if token == '':
-        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
         return
 
     user = UsersController(db).get_user_by_token(websocket.query_params.get('token', ''))
 
     if not user:
-        await websocket.close(code=status.WS_1008_POLICY_VIOLATION)
         return
     else:
         return user
